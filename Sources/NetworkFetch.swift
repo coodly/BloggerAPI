@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
+import Foundation
 
-public class Blogger {
-    private let blogURL: String
-    private let apiKey: String
-    private let fetch: NetworkFetch
-    
-    public init(blogURL: String, key: String, fetch: NetworkFetch) {
-        self.blogURL = blogURL
-        apiKey = key
-        self.fetch = fetch
-    }
+public typealias NetworkFetchClosure = (Data?, URLResponse?, Error?) -> ()
+
+public protocol NetworkFetch {
+    func fetch(request: URLRequest, completion: NetworkFetchClosure)
 }

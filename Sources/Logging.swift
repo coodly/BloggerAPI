@@ -14,15 +14,22 @@
  * limitations under the License.
  */
 
+import Foundation
 
-public class Blogger {
-    private let blogURL: String
-    private let apiKey: String
-    private let fetch: NetworkFetch
+public protocol LoggingDelegate: class {
+    func log<T>(_ object: T, file: String, function: String, line: Int)
+}
+
+public class Logging {
+    public weak var delegate: LoggingDelegate?
     
-    public init(blogURL: String, key: String, fetch: NetworkFetch) {
-        self.blogURL = blogURL
-        apiKey = key
-        self.fetch = fetch
+    internal static let sharedInstance = Logging()
+    
+    public class func set(delegate: LoggingDelegate) {
+        sharedInstance.delegate = delegate
+    }
+    
+    internal class func log<T>(_ object: T, file: String = #file, function: String = #function, line: Int = #line) {
+        sharedInstance.delegate?.log(object, file: file, function: function, line: line)
     }
 }
