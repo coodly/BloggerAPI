@@ -15,14 +15,43 @@
  */
 
 
-public class Blogger {
+public class Blogger: InjectionHandler {
     private let blogURL: String
-    private let apiKey: String
-    private let fetch: NetworkFetch
+    private var blogId: String?
     
     public init(blogURL: String, key: String, fetch: NetworkFetch) {
         self.blogURL = blogURL
-        apiKey = key
-        self.fetch = fetch
+        Injector.sharedInstance.apiKey = key
+        Injector.sharedInstance.fetch = fetch
+    }
+    
+    public func fetchUpdates(after date: Date) {
+        Logging.log("Fetch updates after \(date)")
+        
+        guard let blog = blogId else {
+            resolveBlog() {
+                self.fetchUpdates(after: date)
+            }
+            return
+        }
+    }
+    
+    private func resolveBlog(completion: @escaping () -> ()) {
+        Logging.log("Resolve blog")
+        let request = ResolveBlogByURLRequest(url: blogURL)
+        inject(into: request)
+        request.completionHandler = {
+            id in
+            
+            guard let blogId = id else {
+                Logging.log("Blog id not received")
+                return
+            }
+            
+            Logging.log("BlogID: \(blogId)")
+            self.blogId = blogId
+            completion()
+        }
+        request.execute()
     }
 }
