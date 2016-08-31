@@ -31,6 +31,13 @@ class Injector {
     
     var fetch: NetworkFetch!
     var apiKey: String!
+    var blogId: String?
+    private var bloggerDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        return formatter
+    }()
     
     func inject(into: AnyObject) {
         if var consumer = into as? FetchConsumer {
@@ -39,6 +46,14 @@ class Injector {
         
         if var consumer = into as? KeyConsumer {
             consumer.apiKey = apiKey
+        }
+        
+        if var consumer = into as? BlogIdConsumer {
+            consumer.blogId = blogId!
+        }
+        
+        if var consumer = into as? DateFormatterConsumer {
+            consumer.dateFormatter = bloggerDateFormatter
         }
     }
 }
