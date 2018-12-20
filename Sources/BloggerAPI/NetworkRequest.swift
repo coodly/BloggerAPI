@@ -24,7 +24,7 @@ public enum BloggerError: Error {
     case invalidJSON(Error)
 }
 
-internal struct Result<T: Codable> {
+internal struct NetworkResult<T: Codable> {
     let success: T?
     let error: Error?
 }
@@ -57,11 +57,16 @@ internal enum Variable {
     }
 }
 
-internal class NetworkRequest<T: Codable>: FetchConsumer, KeyConsumer, Executed {
+internal class NetworkRequest<T: Codable, Result>: FetchConsumer, KeyConsumer, Executed {
     var fetch: NetworkFetch!
     var apiKey: String!
     
-    var resulthandler: ((Any?, Error?) -> ())!
+    internal var result: Result! {
+        didSet {
+            resultCallback?(result)
+        }
+    }
+    internal var resultCallback: ((Result) -> Void)?
     
     func execute() {
         fatalError("Override \(#function)")
@@ -126,7 +131,7 @@ internal class NetworkRequest<T: Codable>: FetchConsumer, KeyConsumer, Executed 
         var result: T?
         var handleError: BloggerError?
         defer {
-            self.handle(result: Result(success: result, error: handleError))
+            self.handle(result: NetworkResult(success: result, error: handleError))
         }
         
         if let error = error {
@@ -150,7 +155,7 @@ internal class NetworkRequest<T: Codable>: FetchConsumer, KeyConsumer, Executed 
         }
     }
     
-    internal func handle(result: Result<T>) {
+    internal func handle(result: NetworkResult<T>) {
         Logging.log("Handle: \(result)")
     }
 }

@@ -16,9 +16,12 @@
 
 import Foundation
 
-internal class ResolveBlogByURLRequest: NetworkRequest<Blog> {
+internal struct BlogIdResult {
+    let id: String?
+}
+
+internal class ResolveBlogByURLRequest: NetworkRequest<Blog, BlogIdResult> {
     private let url: String
-    var completionHandler: ((String?) -> ())!
     
     init(url: String) {
         self.url = url
@@ -28,7 +31,7 @@ internal class ResolveBlogByURLRequest: NetworkRequest<Blog> {
         GET("/blogs/byurl", parameters: ["url": url as AnyObject])
     }
     
-    override func handle(result: Result<Blog>) {
-        completionHandler(result.success?.id)
+    override func handle(result: NetworkResult<Blog>) {
+        self.result = BlogIdResult(id: result.success?.id)
     }
 }

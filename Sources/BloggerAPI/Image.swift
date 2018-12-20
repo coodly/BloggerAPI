@@ -17,5 +17,14 @@
 import Foundation
 
 public struct Image: Codable {
-    let url: URL
+    public let url: URL
+    
+    public var largeImageURL: URL {
+        var value = url.absoluteString
+        guard value.range(of: "blogspot.com") != nil else {
+            return url
+        }
+        value = value.replacingOccurrences(of: "/s200/", with: "/s1600/")
+        return URL(string: value)!
+    }
 }
