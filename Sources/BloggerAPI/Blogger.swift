@@ -41,7 +41,7 @@ public class Blogger: InjectionHandler {
     }
     
     public func fetchPost(_ postId: String) {
-        
+        Logging.log("Fetch post: \(postId)")
     }
     
     private func resolveBlog(completion: @escaping () -> ()) {
