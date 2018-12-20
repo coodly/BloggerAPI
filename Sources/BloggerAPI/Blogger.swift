@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import Foundation
 
 public class Blogger: InjectionHandler {
     private let blogURL: String

@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '9.0'
 
-  s.source_files = 'Sources/*.swift'
+  s.source_files = 'Sources/BloggerAPI/*.swift'
 
   s.requires_arc = true
 end
