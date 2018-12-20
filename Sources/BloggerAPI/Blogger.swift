@@ -28,7 +28,7 @@ public class Blogger: InjectionHandler {
     public func fetchUpdates(after date: Date) {
         Logging.log("Fetch updates after \(date)")
         
-        guard let blog = Injector.sharedInstance.blogId else {
+        guard Injector.sharedInstance.blogId == nil else {
             resolveBlog() {
                 self.fetchUpdates(after: date)
             }
@@ -38,6 +38,10 @@ public class Blogger: InjectionHandler {
         let request = ListPostsRequest(since: date)
         inject(into: request)
         request.execute()
+    }
+    
+    public func fetchPost(_ postId: String) {
+        
     }
     
     private func resolveBlog(completion: @escaping () -> ()) {
