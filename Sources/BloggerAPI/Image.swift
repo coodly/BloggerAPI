@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Coodly LLC
+ * Copyright 2018 Coodly LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,6 @@
 
 import Foundation
 
-private let PostPathBase = "/blogs/:blogId:/posts/:postId:"
-
-internal class RetrievePostRequest: NetworkRequest<Post> {
-    private let postId: String
-    internal init(postId: String) {
-        self.postId = postId
-    }
-    
-    override func execute() {
-        get(PostPathBase, variables: [.postId(postId)], parameters: ["fetchImages": "true" as AnyObject])
-    }
+public struct Image: Codable {
+    let url: URL
 }

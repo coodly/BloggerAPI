@@ -38,6 +38,25 @@ internal protocol Executed: class {
     func execute()
 }
 
+internal struct VariableValue {
+    let key: String
+    let value: String
+}
+
+internal enum Variable {
+    case blogId(String)
+    case postId(String)
+    
+    var value: VariableValue {
+        switch self {
+        case .blogId(let id):
+            return VariableValue(key: ":blogId:", value: id)
+        case .postId(let id):
+            return VariableValue(key: ":postId:", value: id)
+        }
+    }
+}
+
 internal class NetworkRequest<T: Codable>: FetchConsumer, KeyConsumer, Executed {
     var fetch: NetworkFetch!
     var apiKey: String!
@@ -54,6 +73,16 @@ internal class NetworkRequest<T: Codable>: FetchConsumer, KeyConsumer, Executed 
     
     func POST(_ path: String, parameters: [String: AnyObject]? = nil) {
         execute(.post, path: path, parameters: parameters)
+    }
+    
+    func get(_ path: String, variables: [Variable], parameters: [String: AnyObject]? = nil) {
+        var vars = variables
+        if let blogId = Injector.sharedInstance.blogId {
+            vars.append(.blogId(blogId))
+        }
+        
+        let replaced = path.replace(variables: vars)
+        execute(.get, path: replaced, parameters: parameters)
     }
     
     private func execute(_ method: Method, path: String, parameters: [String: AnyObject]?) {
@@ -111,6 +140,9 @@ internal class NetworkRequest<T: Codable>: FetchConsumer, KeyConsumer, Executed 
         }
         
         let decoder = JSONDecoder()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZ"
+        decoder.dateDecodingStrategy = .formatted(formatter)
         do {
             result = try decoder.decode(T.self, from: data)
         } catch {

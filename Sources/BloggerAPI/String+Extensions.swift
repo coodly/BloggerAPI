@@ -16,15 +16,13 @@
 
 import Foundation
 
-private let PostPathBase = "/blogs/:blogId:/posts/:postId:"
-
-internal class RetrievePostRequest: NetworkRequest<Post> {
-    private let postId: String
-    internal init(postId: String) {
-        self.postId = postId
-    }
-    
-    override func execute() {
-        get(PostPathBase, variables: [.postId(postId)], parameters: ["fetchImages": "true" as AnyObject])
+extension String {
+    internal func replace(variables: [Variable]) -> String {
+        var result = self
+        for variable in variables {
+            let value = variable.value
+            result = result.replacingOccurrences(of: value.key, with: value.value)
+        }
+        return result
     }
 }
