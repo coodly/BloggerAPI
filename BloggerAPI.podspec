@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'BloggerAPI'
-  s.version = '0.1.0'
+  s.version = '0.1.1'
   s.license = 'Apache 2'
   s.summary = 'Blogger API client in Swift'
   s.homepage = 'https://github.com/coodly/BloggerAPI'
