@@ -20,10 +20,6 @@ public struct Image: Codable {
     public let url: URL
     
     public var largeImageURL: URL {
-        guard url.absoluteString.range(of: "blogspot.com") != nil else {
-            return url
-        }
-
         let imageName = url.lastPathComponent
         let withoutName = url.deletingLastPathComponent()
         let withoutSizeMarker = withoutName.deletingLastPathComponent()
