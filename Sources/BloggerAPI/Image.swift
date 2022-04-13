@@ -20,12 +20,18 @@ public struct Image: Codable {
     public let url: URL
     
     public var largeImageURL: URL {
-        let imageName = url.lastPathComponent
-        let withoutName = url.deletingLastPathComponent()
-        let withoutSizeMarker = withoutName.deletingLastPathComponent()
-        let withSizeMarker = withoutSizeMarker.appendingPathComponent("s1600", isDirectory: true)
-        let withName = withSizeMarker.appendingPathComponent(imageName)
+        let replaced: [String: String] = [
+            "w112-h200": "s1600",
+            "w113-h200": "s1600",
+            "/s200/": "/s1600/"
+        ]
         
-        return withName
+        for (sub, replace) in replaced {
+            if let range = url.absoluteString.range(of: sub), let modified = URL(string: url.absoluteString.replacingCharacters(in: range, with: replace)) {
+                return modified
+            }
+        }
+        
+        return url
     }
 }
